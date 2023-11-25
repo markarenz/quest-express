@@ -5,11 +5,12 @@ import Sprite from './Sprite';
 
 type Props = {
   entityData: EntityType;
+  scale: number;
 };
 
-const Entity: React.FC<Props> = ({ entityData }) => {
+const Entity: React.FC<Props> = ({ entityData, scale }) => {
   return (
-    <Positioner entity={entityData} key={entityData.id}>
+    <Positioner entity={entityData} key={entityData.id} scale={scale}>
       <div
         style={{
           width: '100%',

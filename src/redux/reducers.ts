@@ -1,23 +1,33 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GameSliceState, GameState } from '../types';
-import { getMappedKey, getPlayerDirection, moveEntity } from '../components/game/gameUtils';
+import {
+  getMappedKey,
+  getPlayerDirection,
+  moveEntity,
+  getTileAction,
+  processTileAction,
+} from '../components/game/gameUtils';
 
 export const inputAddReducer = (state: GameSliceState, action: PayloadAction<string>) => {
-  if (action.payload === 'escape') {
-    state.gameState.isPaused = !state.gameState.isPaused;
-    return;
-  }
-  if (!state.gameState.isPaused) {
-    const mappedKey = getMappedKey(action.payload);
-    if (mappedKey && !state.keysDown[mappedKey]) {
-      state.keysDown[mappedKey] = true;
+  if (!state.gameState.currentTransition) {
+    if (action.payload === 'escape') {
+      state.gameState.isPaused = !state.gameState.isPaused;
+      return;
+    }
+    if (!state.gameState.isPaused) {
+      const mappedKey = getMappedKey(action.payload);
+      if (mappedKey && !state.keysDown[mappedKey]) {
+        state.keysDown[mappedKey] = true;
+      }
     }
   }
 };
 export const inputRemoveReducer = (state: GameSliceState, action: PayloadAction<string>) => {
-  const mappedKey = getMappedKey(action.payload);
-  if (mappedKey && state.keysDown[mappedKey]) {
-    delete state.keysDown[mappedKey];
+  if (!state.gameState.currentTransition) {
+    const mappedKey = getMappedKey(action.payload);
+    if (mappedKey && state.keysDown[mappedKey]) {
+      delete state.keysDown[mappedKey];
+    }
   }
 };
 
@@ -44,13 +54,20 @@ export const processPhysicsReducer = (state: GameSliceState) => {
       checkEntitiesProximityStatus(state.gameState);
     }
 
+    const currentTileMap = state.gameState.level.areas[state.gameState.player.area || 0].tileMap;
     moveEntity(
       state.gameState.player,
       direction,
       state.gameState.entities,
-      state.gameState.level,
+      currentTileMap,
       state.gameState.cameraOffset,
-      state.gameState.aspectRatio,
+      state.gameState.screen.aspectRatio,
+      state.gameState.screen.scale,
     );
+
+    const action = getTileAction(state.gameState.player, currentTileMap);
+    if (action) {
+      processTileAction(state, action);
+    }
   }
 };

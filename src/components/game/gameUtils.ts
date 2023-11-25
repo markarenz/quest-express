@@ -6,6 +6,8 @@ import {
   TileMap,
   TileType,
   ENTITY_STATUSES,
+  GameSliceState,
+  GameState,
 } from '../../types';
 import { INPUT_MAPPINGS, tileDefs } from '../../constants';
 
@@ -13,29 +15,44 @@ export const sigFigs = (num: number): number => Number(num.toFixed(2));
 
 export const getMappedKey = (key: string): string => INPUT_MAPPINGS[key];
 
-export const getAspectRatio = (): number => {
+export const getScreenDimensions = () => {
   if (typeof window !== 'undefined') {
     const w = window?.innerWidth;
     const h = window?.innerHeight;
 
-    return w && h ? w / h : 1;
+    const scale = w > 1240 ? 5 : w > 1024 ? 7 : w > 768 ? 10 : w > 486 ? 13 : 15;
+
+    return {
+      size: {
+        w,
+        h,
+      },
+      aspectRatio: w && h ? w / h : 1,
+      scale,
+    };
   }
 
-  return 1;
+  return {
+    size: {
+      w: 1,
+      h: 1,
+    },
+    aspectRatio: 1,
+    scale: 1,
+  };
 };
 
-export const getCameraOffsetInit = (playerPosition: Vector, aspectRatio: number): Vector => {
-  const cameraOffset: Vector = {
-    x: 0,
-    y: 0,
-  };
+export const setCameraOffsetInit = (gameState: GameState) => {
+  const {
+    player,
+    screen: { aspectRatio, scale },
+  } = gameState;
 
-  const xMid = 10;
-  const yMid = (1 / aspectRatio) * 10;
-  cameraOffset.x = xMid - playerPosition.x;
-  cameraOffset.y = yMid - playerPosition.y;
+  const xMid = 100 / scale / 2;
+  const yMid = (1 / aspectRatio) * xMid;
 
-  return cameraOffset;
+  gameState.cameraOffset.x = xMid - player.position.x;
+  gameState.cameraOffset.y = yMid - player.position.y;
 };
 
 export const getPlayerDirection = (keysDown: ObjectOfBooleans): Vector => {
@@ -201,6 +218,7 @@ export const moveEntity = (
   level: { [key: string]: TileType },
   cameraOffset: Vector,
   aspectRatio: number,
+  scale: number,
 ): void => {
   if (direction.x !== 0 || direction.y !== 0) {
     const speed = 0.2;
@@ -237,14 +255,17 @@ export const moveEntity = (
           y: entity.position.y + cameraOffset.y,
         };
 
-        if (screenPosition.x > 15) {
+        const marginMax = (100 / scale) * 0.75;
+        const marginMin = (100 / scale) * 0.25;
+
+        if (screenPosition.x > marginMax) {
           cameraOffset.x = sigFigs(cameraOffset.x - speed);
-        } else if (screenPosition.x < 5) {
+        } else if (screenPosition.x < marginMin) {
           cameraOffset.x = sigFigs(cameraOffset.x + speed);
         }
-        if (screenPosition.y > (1 / aspectRatio) * 15) {
+        if (screenPosition.y > (1 / aspectRatio) * marginMax) {
           cameraOffset.y = sigFigs(cameraOffset.y - speed);
-        } else if (screenPosition.y < (1 / aspectRatio) * 5) {
+        } else if (screenPosition.y < (1 / aspectRatio) * marginMin) {
           cameraOffset.y = sigFigs(cameraOffset.y + speed);
         }
       }
@@ -254,4 +275,42 @@ export const moveEntity = (
   } else {
     entity.status = ENTITY_STATUSES.IDLE;
   }
+};
+
+export const getTileAction = (player: EntityType, tileMap: TileMap): string | null => {
+  const currentTileType =
+    tileMap[
+      `${Math.floor(player.position.x)},${Math.floor(player.position.y + player.hitBox.position.y)}`
+    ]?.type;
+
+  const action = tileDefs[currentTileType]?.action || null;
+  return action;
+};
+
+export const processTileAction = (state: GameSliceState, action: string) => {
+  if (action) {
+    switch (action) {
+      case 'go_up':
+      case 'go_down':
+        const dir = action === 'go_up' ? 1 : -1;
+
+        const nextArea =
+          typeof state.gameState.player.area !== 'undefined'
+            ? state.gameState.player.area + 1 * dir
+            : 0;
+
+        state.keysDown = {};
+        state.gameState.currentTransition = `area-${nextArea}`;
+        break;
+      default:
+        break;
+    }
+  }
+};
+
+export const doInitArea = (gameState: GameState) => {
+  console.log('AREA', gameState.player.area);
+  gameState.entities = gameState.level.areas[gameState.player.area || 0].entities;
+
+  setCameraOffsetInit(gameState);
 };

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GameSliceState } from '../types';
 import { initialGameState } from '../constants';
 import { inputAddReducer, inputRemoveReducer, processPhysicsReducer } from './reducers';
-import { getAspectRatio, getCameraOffsetInit } from '../components/game/gameUtils';
+import { getScreenDimensions, setCameraOffsetInit, doInitArea } from '../components/game/gameUtils';
 
 export type Slices = {
   game: GameSliceState;
@@ -24,15 +24,17 @@ export const gameSlice = createSlice({
     initState: (state) => {
       state = getInitialState();
     },
-    initLevel: (state) => {
-      state.gameState.cameraOffset = getCameraOffsetInit(
-        state.gameState.player.position,
-        state.gameState.aspectRatio,
-      );
+    initArea: (state) => {
+      doInitArea(state.gameState);
       state.gameState.isLevelReady = true;
     },
-    setAspectRatio: (state) => {
-      state.gameState.aspectRatio = getAspectRatio();
+    initLevel: (state) => {
+      doInitArea(state.gameState);
+      // setCameraOffsetInit(state.gameState);
+      state.gameState.isLevelReady = true;
+    },
+    setScreenDimensions: (state) => {
+      state.gameState.screen = getScreenDimensions();
     },
     inputAdd: (state, action: PayloadAction<string>) => {
       inputAddReducer(state, action);
@@ -41,12 +43,36 @@ export const gameSlice = createSlice({
       inputRemoveReducer(state, action);
     },
     processPhysics: (state) => {
-      processPhysicsReducer(state);
+      if (!state.gameState.currentTransition) {
+        processPhysicsReducer(state);
+      }
+    },
+    setLevelArea: (state, action: PayloadAction<number>) => {
+      state.gameState.player.position = {
+        x: state.gameState.player.position.x,
+        y: state.gameState.player.position.y + 1 * state.gameState.player.direction.y,
+      };
+
+      state.gameState.player.area = action.payload;
+
+      doInitArea(state.gameState);
+    },
+    clearTransition: (state) => {
+      delete state.gameState.currentTransition;
     },
   },
 });
 
-export const { initState, inputAdd, inputRemove, processPhysics, setAspectRatio, initLevel } =
-  gameSlice.actions;
+export const {
+  initState,
+  inputAdd,
+  inputRemove,
+  processPhysics,
+  setScreenDimensions,
+  initLevel,
+  initArea,
+  setLevelArea,
+  clearTransition,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;

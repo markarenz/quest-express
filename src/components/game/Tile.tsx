@@ -5,16 +5,16 @@ import { tileDefs, TILE_WIDTH } from '../../constants';
 type Props = {
   coords: string;
   tileData: TileType;
+  scale: number;
 };
 
-const Tile: React.FC<Props> = ({ coords, tileData }) => {
+const Tile: React.FC<Props> = ({ coords, tileData, scale }) => {
   const canvasRef = useRef(null);
-  const canvasRefOverlay = useRef(null);
+  // const canvasRefOverlay = useRef(null);
 
   const width = TILE_WIDTH;
   const height = TILE_WIDTH;
 
-  const tileSize = 5;
   const [xStr, yStr] = coords.split(',');
   const x = parseFloat(xStr);
   const y = parseFloat(yStr);
@@ -42,6 +42,20 @@ const Tile: React.FC<Props> = ({ coords, tileData }) => {
               TILE_WIDTH,
               TILE_WIDTH,
             );
+
+            if (tileData.overlay) {
+              ctx.drawImage(
+                img,
+                tileDefs[tileData.overlay]?.spritePosition.x * width,
+                tileDefs[tileData.overlay]?.spritePosition.y * height,
+                TILE_WIDTH,
+                TILE_WIDTH,
+                0,
+                0,
+                TILE_WIDTH,
+                TILE_WIDTH,
+              );
+            }
           };
         }
       }
@@ -49,9 +63,6 @@ const Tile: React.FC<Props> = ({ coords, tileData }) => {
 
     if (canvasRef.current) {
       drawTileImage(canvasRef.current, tileDefs[tileData.type]);
-    }
-    if (tileData.overlay && canvasRefOverlay.current) {
-      drawTileImage(canvasRefOverlay.current, tileDefs[tileData.overlay]);
     }
   }, [tileData, height, width]);
 
@@ -63,10 +74,10 @@ const Tile: React.FC<Props> = ({ coords, tileData }) => {
     <div
       style={{
         position: 'absolute',
-        transform: `translate(${Math.floor(x * tileSize)}vw, ${Math.floor(y * tileSize)}vw)`,
-        height: `${tileSize}vw`,
-        width: `${tileSize}vw`,
-        zIndex: tileDefs[tileData.type].walkable ? 0 : Math.floor((y + 1) * tileSize),
+        transform: `translate(${Math.floor(x * scale)}vw, ${Math.floor(y * scale)}vw)`,
+        height: `${scale}vw`,
+        width: `${scale}vw`,
+        zIndex: tileDefs[tileData.type].walkable ? 0 : Math.floor((y + 1) * scale),
       }}
     >
       <canvas
@@ -80,7 +91,7 @@ const Tile: React.FC<Props> = ({ coords, tileData }) => {
         width={`${TILE_WIDTH}`}
         height={`${TILE_WIDTH}`}
       />
-      {tileData.overlay && (
+      {/* {tileData.overlay && (
         <canvas
           ref={canvasRefOverlay}
           style={{
@@ -93,7 +104,7 @@ const Tile: React.FC<Props> = ({ coords, tileData }) => {
           width={`${TILE_WIDTH}`}
           height={`${TILE_WIDTH}`}
         />
-      )}
+      )} */}
     </div>
   );
 };

@@ -1,18 +1,21 @@
-import dynamic from 'next/dynamic';
 import { useEffect, KeyboardEvent } from 'react';
+import dynamic from 'next/dynamic';
 import { useGameSliceSelector, useGameSliceDispatch } from '../../redux/reduxHooks';
 import {
   Slices,
   inputAdd,
   inputRemove,
   processPhysics,
-  setAspectRatio,
-  initLevel,
-} from '../../redux/gameSlice';
+  setScreenDimensions,
+  // initLevel,
+  initArea,
+} from '@/redux/gameSlice';
 import Positioner from './Positioner';
 import Tiles from './Tiles';
 import Sprite from './Sprite';
 import Entity from './Entity';
+import PauseModal from './PauseModal';
+import TransitionModal from './TransitionModal';
 
 declare global {
   interface WindowEventMap {
@@ -22,7 +25,7 @@ declare global {
 
 const Game = () => {
   const {
-    gameState: { player, entities, cameraOffset, isLevelReady },
+    gameState: { player, entities, cameraOffset, isLevelReady, screen, isPaused },
   } = useGameSliceSelector((state: Slices) => state.game);
   const dispatch = useGameSliceDispatch();
 
@@ -53,12 +56,13 @@ const Game = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      dispatch(setAspectRatio());
+      dispatch(setScreenDimensions());
     };
 
     handleResize();
     window?.addEventListener('resize', handleResize);
-    dispatch(initLevel());
+    // dispatch(initLevel());
+    dispatch(initArea());
     return () => {
       window?.removeEventListener('resize', handleResize);
     };
@@ -78,10 +82,8 @@ const Game = () => {
       <div
         style={{
           position: 'absolute',
-          // top: `${cameraOffset.y * 5}vw`,
-          // left: `${cameraOffset.x * 5}vw`,
-          transform: `translate(${Math.floor(cameraOffset.x * 5)}vw, ${Math.floor(
-            cameraOffset.y * 5,
+          transform: `translate(${Math.floor(cameraOffset.x * screen.scale)}vw, ${Math.floor(
+            cameraOffset.y * screen.scale,
           )}vw)`,
           backgroundColor: 'yellow',
           zIndex: 0,
@@ -90,14 +92,16 @@ const Game = () => {
         <Tiles />
 
         {entities.map((entityData) => (
-          <Entity key={entityData.id} entityData={entityData} />
+          <Entity key={entityData.id} entityData={entityData} scale={screen.scale} />
         ))}
-        <Positioner entity={player}>
-          <div style={{ width: '5vw', height: '5vw' }}>
+        <Positioner entity={player} scale={screen.scale}>
+          <div style={{ width: `${screen.scale}vw`, height: `${screen.scale}vw` }}>
             <Sprite slug="player" status={player.status} direction={player.direction} />
           </div>
         </Positioner>
       </div>
+      <TransitionModal />
+      {isPaused && <PauseModal />}
       <div
         id="hud"
         style={{
@@ -110,7 +114,8 @@ const Game = () => {
         }}
       >
         <span style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-          {Math.floor(player.position.x)},{Math.floor(player.position.y)}
+          {Math.floor(player.position.x)},{Math.floor(player.position.y)},{player.area}*
+          {entities.length}*
         </span>
       </div>
     </div>

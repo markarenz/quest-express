@@ -4,9 +4,11 @@ import { EntityType } from '../../types';
 type Props = {
   entity: EntityType;
   children: JSX.Element;
+  scale: number;
 };
+// TODO: we support negative Y values above -50
 
-const Positioner: React.FC<Props> = ({ children, entity }) => {
+const Positioner: React.FC<Props> = ({ children, entity, scale }) => {
   const {
     position: { x, y },
     size: { h, w },
@@ -15,10 +17,10 @@ const Positioner: React.FC<Props> = ({ children, entity }) => {
     <div
       style={{
         position: 'absolute',
-        transform: `translate(${Math.floor(x * 5)}vw, ${Math.floor(y * 5)}vw)`,
-        zIndex: Math.floor(y * 5 + h * 5),
-        height: `${h * 5}vw`,
-        width: `${w * 5}vw`,
+        transform: `translate(${Math.floor(x * scale)}vw, ${Math.floor(y * scale)}vw)`,
+        zIndex: Math.floor((y + 50) * scale + h * scale),
+        height: `${h * scale}vw`,
+        width: `${w * scale}vw`,
       }}
     >
       {children}
