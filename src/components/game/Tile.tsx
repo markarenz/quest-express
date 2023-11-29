@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import { TileType, TileDef } from '../../types';
+import { TileInstance, TileDef } from '../../types';
 import { tileDefs, TILE_WIDTH } from '../../constants';
 
 type Props = {
   coords: string;
-  tileData: TileType;
+  tileData: TileInstance;
   scale: number;
 };
 

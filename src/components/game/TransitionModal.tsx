@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useGameSliceSelector, useGameSliceDispatch } from '../../redux/reduxHooks';
-import { clearTransition, setLevelArea } from '@/redux/gameSlice';
+import { clearTransition, teleportPlayer } from '@/redux/gameSlice';
 import { Slices } from '@/redux/gameSlice';
 
 const TransitionModal = () => {
@@ -16,9 +16,8 @@ const TransitionModal = () => {
       setTimeout(() => {
         // wait
         switch (type) {
-          case 'area':
-            const areaNum = parseFloat(valueStr);
-            dispatch(setLevelArea(areaNum));
+          case 'teleport':
+            dispatch(teleportPlayer(valueStr));
             break;
           default:
             break;
@@ -26,7 +25,7 @@ const TransitionModal = () => {
 
         setTimeout(() => {
           dispatch(clearTransition());
-        }, 300);
+        }, 400);
       }, 300);
     }
   }, [currentTransition]);

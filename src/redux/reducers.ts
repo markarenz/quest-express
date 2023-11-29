@@ -4,8 +4,7 @@ import {
   getMappedKey,
   getPlayerDirection,
   moveEntity,
-  getTileAction,
-  processTileAction,
+  checkTileAction,
 } from '../components/game/gameUtils';
 
 export const inputAddReducer = (state: GameSliceState, action: PayloadAction<string>) => {
@@ -33,12 +32,10 @@ export const inputRemoveReducer = (state: GameSliceState, action: PayloadAction<
 
 const checkEntitiesProximityStatus = (gameState: GameState) => {
   gameState.entities = gameState.entities.map((entity) => {
-    if (entity.type !== 'player') {
-      const distance =
-        Math.abs(entity.position.x - gameState.player.position.x) +
-        Math.abs(entity.position.y - gameState.player.position.y);
-      entity.isActive = distance < 5;
-    }
+    const distance =
+      Math.abs(entity.position.x - gameState.player.position.x) +
+      Math.abs(entity.position.y - gameState.player.position.y);
+    entity.isActive = distance < 5;
     return entity;
   });
 };
@@ -65,9 +62,6 @@ export const processPhysicsReducer = (state: GameSliceState) => {
       state.gameState.screen.scale,
     );
 
-    const action = getTileAction(state.gameState.player, currentTileMap);
-    if (action) {
-      processTileAction(state, action);
-    }
+    checkTileAction(state, currentTileMap);
   }
 };

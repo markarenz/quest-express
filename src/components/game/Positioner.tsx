@@ -1,8 +1,8 @@
 import React from 'react';
-import { EntityType } from '../../types';
+import { EntityInstance } from '../../types';
 
 type Props = {
-  entity: EntityType;
+  entity: EntityInstance;
   children: JSX.Element;
   scale: number;
 };
@@ -17,6 +17,7 @@ const Positioner: React.FC<Props> = ({ children, entity, scale }) => {
     <div
       style={{
         position: 'absolute',
+        transition: 'transform 0.1s linear',
         transform: `translate(${Math.floor(x * scale)}vw, ${Math.floor(y * scale)}vw)`,
         zIndex: Math.floor((y + 50) * scale + h * scale),
         height: `${h * scale}vw`,

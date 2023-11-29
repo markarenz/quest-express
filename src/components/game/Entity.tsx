@@ -1,10 +1,10 @@
 import React from 'react';
-import { EntityType } from '../../types';
+import { EntityInstance } from '../../types';
 import Positioner from './Positioner';
 import Sprite from './Sprite';
 
 type Props = {
-  entityData: EntityType;
+  entityData: EntityInstance;
   scale: number;
 };
 

@@ -47,13 +47,14 @@ export const gameSlice = createSlice({
         processPhysicsReducer(state);
       }
     },
-    setLevelArea: (state, action: PayloadAction<number>) => {
+    teleportPlayer: (state, action: PayloadAction<string>) => {
+      const [newX, newY, newArea] = `${action.payload}`.split('_');
       state.gameState.player.position = {
-        x: state.gameState.player.position.x,
-        y: state.gameState.player.position.y + 1 * state.gameState.player.direction.y,
+        x: parseFloat(newX),
+        y: parseFloat(newY),
       };
 
-      state.gameState.player.area = action.payload;
+      state.gameState.player.area = parseFloat(newArea);
 
       doInitArea(state.gameState);
     },
@@ -71,7 +72,7 @@ export const {
   setScreenDimensions,
   initLevel,
   initArea,
-  setLevelArea,
+  teleportPlayer,
   clearTransition,
 } = gameSlice.actions;
 

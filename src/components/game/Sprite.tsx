@@ -73,8 +73,8 @@ const Sprite: React.FC<Props> = ({ slug, status, direction }) => {
     };
     if (img && isReady && ctx) {
       const drawFrame = (frameX: number, frameY: number) => {
-        const h = entityDefs[slug].h * TILE_WIDTH;
-        const w = entityDefs[slug].w * TILE_WIDTH;
+        const h = entityDefs[slug].size.h * TILE_WIDTH;
+        const w = entityDefs[slug].size.w * TILE_WIDTH;
         ctx.drawImage(img, frameX * width, frameY * height, w, h, 0, 0, TILE_WIDTH, TILE_WIDTH);
       };
 

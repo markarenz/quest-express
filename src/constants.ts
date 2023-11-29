@@ -1,4 +1,4 @@
-import { GameState, TileDef, ENTITY_STATUSES, DIRECTIONS, Size } from './types';
+import { GameState, TileDef, ENTITY_STATUSES, DIRECTIONS, Size, EntityDef } from './types';
 import { getScreenDimensions } from './components/game/gameUtils';
 import { area_1_0 } from './constants_area_1_0';
 import { area_1_1 } from './constants_area_1_1';
@@ -214,6 +214,17 @@ export const tileDefs: { [key: string]: TileDef } = {
     action: 'go_down',
   },
 
+  passage_e: {
+    walkable: true,
+    spritePosition: { x: 0, y: 7 },
+    action: 'go',
+  },
+  passage_w: {
+    walkable: true,
+    spritePosition: { x: 1, y: 7 },
+    action: 'go',
+  },
+
   // OVERLAYS: SHADOWS
   shadow_lf: {
     walkable: true,
@@ -241,14 +252,42 @@ export const tileDefs: { [key: string]: TileDef } = {
   },
 };
 
-export const entityDefs: { [key: string]: Size } = {
+export const entityDefs: { [key: string]: EntityDef } = {
   player: {
-    w: 1,
-    h: 1,
+    isActive: true,
+    status: ENTITY_STATUSES.IDLE,
+    size: {
+      w: 1,
+      h: 1,
+    },
+    hitBox: {
+      position: {
+        x: 0,
+        y: 0.5,
+      },
+      size: {
+        h: 0.5,
+        w: 1,
+      },
+    },
   },
   plant: {
-    w: 1,
-    h: 2,
+    isActive: false,
+    status: ENTITY_STATUSES.IDLE,
+    size: {
+      w: 1,
+      h: 2,
+    },
+    hitBox: {
+      position: {
+        x: 0,
+        y: 1.5,
+      },
+      size: {
+        h: 0.5,
+        w: 1,
+      },
+    },
   },
 };
 

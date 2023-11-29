@@ -7,7 +7,6 @@ import {
   inputRemove,
   processPhysics,
   setScreenDimensions,
-  // initLevel,
   initArea,
 } from '@/redux/gameSlice';
 import Positioner from './Positioner';
@@ -82,6 +81,7 @@ const Game = () => {
       <div
         style={{
           position: 'absolute',
+          transition: 'transform 0.1s linear',
           transform: `translate(${Math.floor(cameraOffset.x * screen.scale)}vw, ${Math.floor(
             cameraOffset.y * screen.scale,
           )}vw)`,
@@ -95,7 +95,7 @@ const Game = () => {
           <Entity key={entityData.id} entityData={entityData} scale={screen.scale} />
         ))}
         <Positioner entity={player} scale={screen.scale}>
-          <div style={{ width: `${screen.scale}vw`, height: `${screen.scale}vw` }}>
+          <div id="player" style={{ width: `${screen.scale}vw`, height: `${screen.scale}vw` }}>
             <Sprite slug="player" status={player.status} direction={player.direction} />
           </div>
         </Positioner>
@@ -122,5 +122,4 @@ const Game = () => {
   );
 };
 
-// export default Game;
 export default dynamic(() => Promise.resolve(Game), { ssr: false });

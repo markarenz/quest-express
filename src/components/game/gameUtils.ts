@@ -2,14 +2,14 @@ import {
   Vector,
   ObjectOfBooleans,
   Vectors,
-  EntityType,
+  EntityInstance,
   TileMap,
-  TileType,
+  TileInstance,
   ENTITY_STATUSES,
   GameSliceState,
   GameState,
 } from '../../types';
-import { INPUT_MAPPINGS, tileDefs } from '../../constants';
+import { INPUT_MAPPINGS, tileDefs, entityDefs } from '../../constants';
 
 export const sigFigs = (num: number): number => Number(num.toFixed(2));
 
@@ -75,7 +75,7 @@ export const getPlayerDirection = (keysDown: ObjectOfBooleans): Vector => {
   return direction;
 };
 
-export const getCornersFromEntity = (entity: EntityType, useHitBox = true): Vectors => {
+export const getCornersFromEntity = (entity: EntityInstance, useHitBox = true): Vectors => {
   const x = useHitBox ? entity.hitBox.position.x : 0;
   const y = useHitBox ? entity.hitBox.position.y : 0;
   const h = useHitBox ? entity.hitBox.size.h : entity.size.h;
@@ -103,7 +103,7 @@ export const getCornersFromEntity = (entity: EntityType, useHitBox = true): Vect
 
 export const checkCollisionEntity = (
   entityCorners: Vectors,
-  otherEntity: EntityType,
+  otherEntity: EntityInstance,
   direction: Vector,
   speed: number,
 ): boolean => {
@@ -157,7 +157,7 @@ export const checkTileCollide = (points: Vector[], level: TileMap): boolean => {
 };
 
 export const checkCollisionTiles = (
-  entity: EntityType,
+  entity: EntityInstance,
   direction: Vector,
   speed: number,
   level: TileMap,
@@ -212,10 +212,10 @@ export const checkCollisionTiles = (
 };
 
 export const moveEntity = (
-  entity: EntityType,
+  entity: EntityInstance,
   direction: Vector,
-  entities: EntityType[],
-  level: { [key: string]: TileType },
+  entities: EntityInstance[],
+  level: { [key: string]: TileInstance },
   cameraOffset: Vector,
   aspectRatio: number,
   scale: number,
@@ -236,9 +236,11 @@ export const moveEntity = (
       },
       true,
     );
-    const isCollidingEntities = entities.some((otherEntity) =>
-      checkCollisionEntity(entityCornersHitBox, otherEntity, direction, speed),
-    );
+    const isCollidingEntities = entities
+      .filter((otherEntity) => otherEntity.isActive)
+      .some((otherEntity) =>
+        checkCollisionEntity(entityCornersHitBox, otherEntity, direction, speed),
+      );
 
     if ((newDirection.x !== 0 || newDirection.y !== 0) && !isCollidingEntities) {
       entity.position = {
@@ -277,30 +279,44 @@ export const moveEntity = (
   }
 };
 
-export const getTileAction = (player: EntityType, tileMap: TileMap): string | null => {
-  const currentTileType =
-    tileMap[
-      `${Math.floor(player.position.x)},${Math.floor(player.position.y + player.hitBox.position.y)}`
-    ]?.type;
-
-  const action = tileDefs[currentTileType]?.action || null;
-  return action;
-};
-
-export const processTileAction = (state: GameSliceState, action: string) => {
+export const processTileAction = (state: GameSliceState, action: string, actionValue?: string) => {
   if (action) {
     switch (action) {
+      case 'go':
       case 'go_up':
       case 'go_down':
-        const dir = action === 'go_up' ? 1 : -1;
+        let nextArea;
+        const nextPosition: Vector = {
+          x: state.gameState.player.position.x,
+          y: state.gameState.player.position.y,
+        };
+        if (actionValue) {
+          const [x, y, a] = actionValue.split('_');
+          nextArea = parseFloat(a);
+          nextPosition.x = parseFloat(x);
+          nextPosition.y = parseFloat(y);
+          // state.gameState.player.position.x = parseFloat(x);
+          // state.gameState.player.position.y = parseFloat(y);
+        } else {
+          nextPosition.x += state.gameState.player.direction.x;
+          nextPosition.y += state.gameState.player.direction.y;
 
-        const nextArea =
-          typeof state.gameState.player.area !== 'undefined'
-            ? state.gameState.player.area + 1 * dir
-            : 0;
+          const dir = action === 'go_up' ? 1 : -1;
+          nextArea =
+            typeof state.gameState.player.area !== 'undefined'
+              ? state.gameState.player.area + 1 * dir
+              : 0;
+        }
 
         state.keysDown = {};
-        state.gameState.currentTransition = `area-${nextArea}`;
+        // include both area and x-y in transition data
+        state.gameState.currentTransition = `teleport-${nextPosition.x}_${nextPosition.y}_${nextArea}`;
+        // if (state.gameState.player.area !== nextArea) {
+        //   state.keysDown = {};
+        //   state.gameState.currentTransition = `area-${nextArea}`;
+        // } else {
+        //   setCameraOffsetInit(state.gameState);
+        // }
         break;
       default:
         break;
@@ -308,9 +324,30 @@ export const processTileAction = (state: GameSliceState, action: string) => {
   }
 };
 
+export const checkTileAction = (state: GameSliceState, tileMap: TileMap) => {
+  const { player } = state.gameState;
+  const currentTile =
+    tileMap[
+      `${Math.floor(player.position.x)},${Math.floor(player.position.y + player.hitBox.position.y)}`
+    ];
+
+  if (currentTile) {
+    const action = tileDefs[currentTile.type]?.action || null;
+    if (action) {
+      processTileAction(state, action, currentTile.actionValue);
+    }
+  }
+};
+
 export const doInitArea = (gameState: GameState) => {
-  console.log('AREA', gameState.player.area);
-  gameState.entities = gameState.level.areas[gameState.player.area || 0].entities;
+  gameState.entities = gameState.level.areas[gameState.player.area || 0].entities.map(
+    (entityTileMapInstance) => {
+      return {
+        ...entityDefs[entityTileMapInstance.type],
+        ...entityTileMapInstance,
+      };
+    },
+  );
 
   setCameraOffsetInit(gameState);
 };

@@ -135,7 +135,8 @@ export const area_1_0 = {
       type: 'edge_r',
     },
     '0,8': {
-      type: 'edge_r',
+      type: 'passage_e',
+      actionValue: '22_8_0',
     },
     '0,9': {
       type: 'edge_r',
@@ -253,7 +254,7 @@ export const area_1_0 = {
 
     '1,8': {
       type: 'floor1',
-      overlay: 'shadow_tl',
+      overlay: 'shadow_tf',
     },
     '2,8': {
       type: 'floor1',
@@ -278,7 +279,7 @@ export const area_1_0 = {
 
     '1,9': {
       type: 'floor1',
-      overlay: 'shadow_l',
+      overlay: 'shadow_lf',
     },
     '2,9': {
       type: 'floor1',
@@ -540,7 +541,9 @@ export const area_1_0 = {
       type: 'edge_corner_outside_tl',
     },
     '23,8': {
-      type: 'edge_l',
+      type: 'passage_w',
+      // overlay: 'shadow_t',
+      actionValue: '1_8_0',
     },
     '23,7': {
       type: 'edge_l',
@@ -805,51 +808,19 @@ export const area_1_0 = {
     {
       id: 'tree-1',
       type: 'plant',
-      isActive: false,
       direction: DIRECTIONS.NONE,
-      status: ENTITY_STATUSES.IDLE,
       position: {
         x: 15,
         y: 9,
-      },
-      size: {
-        h: 2,
-        w: 1,
-      },
-      hitBox: {
-        position: {
-          x: 0,
-          y: 1.5,
-        },
-        size: {
-          h: 0.5,
-          w: 1,
-        },
       },
     },
     {
       id: 'tree-2',
       type: 'plant',
-      isActive: false,
       direction: DIRECTIONS.NONE,
-      status: ENTITY_STATUSES.IDLE,
       position: {
         x: 3,
         y: 5,
-      },
-      size: {
-        h: 2,
-        w: 1,
-      },
-      hitBox: {
-        position: {
-          x: 0,
-          y: 1.5,
-        },
-        size: {
-          h: 0.5,
-          w: 1,
-        },
       },
     },
   ],

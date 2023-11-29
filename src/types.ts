@@ -14,10 +14,10 @@ export type TileDef = {
   action?: string;
 };
 
-export type TileType = {
+export type TileInstance = {
   type: string;
   overlay?: string;
-  actionValue?: string; // xyz
+  actionValue?: string; // for teleport
 };
 
 export enum ENTITY_STATUSES {
@@ -25,7 +25,38 @@ export enum ENTITY_STATUSES {
   WALK = 'walk',
 }
 
-export type EntityType = {
+export type EntityDef = {
+  isActive: boolean;
+  status: ENTITY_STATUSES;
+  area?: number; // only needed for player
+  size: Size;
+  hitBox: {
+    position: Vector;
+    size: Size;
+  };
+  // type: string;
+  // id: string;
+  // direction: Vector;
+  // position: Vector;
+};
+
+type EntityTileMapInstance = {
+  id: string;
+  type: string;
+  direction: Vector;
+  position: Vector;
+};
+
+// export type EntityInstance = EntityDef & EntityTileMapInstance;
+
+// extends EntityDef {
+//   id: string;
+//   type: string;
+//   direction: Vector;
+//   position: Vector;
+// }
+
+export type EntityInstance = {
   id: string;
   type: string;
   isActive: boolean;
@@ -42,7 +73,7 @@ export type EntityType = {
 
 export type Area = {
   tileMap: TileMap;
-  entities: EntityType[];
+  entities: EntityTileMapInstance[];
 };
 
 export type Level = {
@@ -63,8 +94,8 @@ export type GameState = {
   };
   level: Level;
   cameraOffset: Vector;
-  player: EntityType;
-  entities: EntityType[];
+  player: EntityInstance;
+  entities: EntityInstance[];
 };
 
 export type GameSliceState = {
@@ -74,7 +105,7 @@ export type GameSliceState = {
 };
 
 export type TileMap = {
-  [key: string]: TileType;
+  [key: string]: TileInstance;
 };
 
 export type Vectors = {
