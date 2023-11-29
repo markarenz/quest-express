@@ -6,9 +6,10 @@ type Props = {
   coords: string;
   tileData: TileInstance;
   scale: number;
+  img: HTMLImageElement;
 };
 
-const Tile: React.FC<Props> = ({ coords, tileData, scale }) => {
+const Tile: React.FC<Props> = ({ coords, tileData, scale, img }) => {
   const canvasRef = useRef(null);
   // const canvasRefOverlay = useRef(null);
 
@@ -26,15 +27,25 @@ const Tile: React.FC<Props> = ({ coords, tileData, scale }) => {
         if (ctx) {
           ctx.clearRect(0, 0, width, height);
           ctx.imageSmoothingEnabled = false;
-          const img = new Image();
-          img.src = '/images/tiles-01.png'; //imageSrc;
-          img.onload = () => {
-            const frameX = tileDef.spritePosition.x;
-            const frameY = tileDef.spritePosition.y;
+          const frameX = tileDef.spritePosition.x;
+          const frameY = tileDef.spritePosition.y;
+          ctx.drawImage(
+            img,
+            frameX * width,
+            frameY * height,
+            TILE_WIDTH,
+            TILE_WIDTH,
+            0,
+            0,
+            TILE_WIDTH,
+            TILE_WIDTH,
+          );
+
+          if (tileData.overlay) {
             ctx.drawImage(
               img,
-              frameX * width,
-              frameY * height,
+              tileDefs[tileData.overlay]?.spritePosition.x * width,
+              tileDefs[tileData.overlay]?.spritePosition.y * height,
               TILE_WIDTH,
               TILE_WIDTH,
               0,
@@ -42,21 +53,7 @@ const Tile: React.FC<Props> = ({ coords, tileData, scale }) => {
               TILE_WIDTH,
               TILE_WIDTH,
             );
-
-            if (tileData.overlay) {
-              ctx.drawImage(
-                img,
-                tileDefs[tileData.overlay]?.spritePosition.x * width,
-                tileDefs[tileData.overlay]?.spritePosition.y * height,
-                TILE_WIDTH,
-                TILE_WIDTH,
-                0,
-                0,
-                TILE_WIDTH,
-                TILE_WIDTH,
-              );
-            }
-          };
+          }
         }
       }
     };
