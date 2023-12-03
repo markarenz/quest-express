@@ -8,8 +8,8 @@ import {
   ENTITY_STATUSES,
   GameSliceState,
   GameState,
-} from '../../types';
-import { INPUT_MAPPINGS, tileDefs, entityDefs } from '../../constants';
+} from '@/types';
+import { INPUT_MAPPINGS, tileDefs, entityDefs } from '@/constants';
 
 export const sigFigs = (num: number): number => Number(num.toFixed(2));
 

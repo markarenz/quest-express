@@ -1,5 +1,5 @@
 import React from 'react';
-import { EntityInstance } from '../../types';
+import { EntityInstance } from '@/types';
 
 type Props = {
   entity: EntityInstance;

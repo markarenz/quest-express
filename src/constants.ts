@@ -1,5 +1,5 @@
 import { GameState, TileDef, ENTITY_STATUSES, DIRECTIONS, Size, EntityDef } from './types';
-import { getScreenDimensions } from './components/game/gameUtils';
+import { getScreenDimensions } from './modules/game/gameUtils';
 import { area_1_0 } from './constants_area_1_0';
 import { area_1_1 } from './constants_area_1_1';
 
@@ -350,6 +350,8 @@ export const INPUT_MAPPINGS: { [key: string]: string } = {
   arrowdown: 'down',
   arrowleft: 'left',
   arrowright: 'right',
+  space: 'action',
+  ' ': 'action',
 };
 
 export const SPRITE_FRAMES: any = {

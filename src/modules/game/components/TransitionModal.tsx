@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useGameSliceSelector, useGameSliceDispatch } from '../../redux/reduxHooks';
+import { useGameSliceSelector, useGameSliceDispatch } from '@/redux/reduxHooks';
 import { clearTransition, teleportPlayer } from '@/redux/gameSlice';
 import { Slices } from '@/redux/gameSlice';
 

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { TileInstance, TileDef } from '../../types';
-import { tileDefs, TILE_WIDTH } from '../../constants';
+import { TileInstance, TileDef } from '@/types';
+import { tileDefs, TILE_WIDTH } from '@/constants';
 
 type Props = {
   coords: string;

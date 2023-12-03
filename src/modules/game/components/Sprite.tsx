@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Vector, ENTITY_STATUSES } from '../../types';
-import { entityDefs, TILE_WIDTH, SPRITE_FRAMES } from '../../constants';
+import { Vector, ENTITY_STATUSES } from '@/types';
+import { entityDefs, TILE_WIDTH, SPRITE_FRAMES } from '@/constants';
 
 // MOVE THESE
 const getDirectionSlug = (direction: Vector): string => {

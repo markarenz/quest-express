@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useGameSliceSelector } from '../../redux/reduxHooks';
-import { Slices } from '../../redux/gameSlice';
+import { useGameSliceSelector } from '@/redux/reduxHooks';
+import { Slices } from '@/redux/gameSlice';
 import Tile from './Tile';
 
 const Tiles = () => {
@@ -10,13 +10,12 @@ const Tiles = () => {
 
   const [img] = useState(new Image());
   const [isReady, setIsReady] = useState(false);
-  // const img = new Image();
+
   useEffect(() => {
     img.src = '/images/tiles-01.png'; //imageSrc;
   }, []);
 
   img.onload = () => {
-    console.log('IS READY - show once');
     setIsReady(true);
   };
 

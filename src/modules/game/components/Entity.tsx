@@ -1,5 +1,5 @@
 import React from 'react';
-import { EntityInstance } from '../../types';
+import { EntityInstance } from '@/types';
 import Positioner from './Positioner';
 import Sprite from './Sprite';
 

@@ -5,25 +5,26 @@ import {
   getPlayerDirection,
   moveEntity,
   checkTileAction,
-} from '../components/game/gameUtils';
+} from '../modules/game/gameUtils';
 
-export const inputAddReducer = (state: GameSliceState, action: PayloadAction<string>) => {
+export const inputAddReducer = (state: GameSliceState, key: string) => {
+  console.log(`>>>inputAddReducer *${key}*`);
   if (!state.gameState.currentTransition) {
-    if (action.payload === 'escape') {
+    if (key === 'escape') {
       state.gameState.isPaused = !state.gameState.isPaused;
       return;
     }
     if (!state.gameState.isPaused) {
-      const mappedKey = getMappedKey(action.payload);
+      const mappedKey = getMappedKey(key);
       if (mappedKey && !state.keysDown[mappedKey]) {
         state.keysDown[mappedKey] = true;
       }
     }
   }
 };
-export const inputRemoveReducer = (state: GameSliceState, action: PayloadAction<string>) => {
+export const inputRemoveReducer = (state: GameSliceState, key: string) => {
   if (!state.gameState.currentTransition) {
-    const mappedKey = getMappedKey(action.payload);
+    const mappedKey = getMappedKey(key);
     if (mappedKey && state.keysDown[mappedKey]) {
       delete state.keysDown[mappedKey];
     }

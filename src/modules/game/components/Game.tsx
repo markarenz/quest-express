@@ -1,6 +1,6 @@
 import { useEffect, KeyboardEvent } from 'react';
 import dynamic from 'next/dynamic';
-import { useGameSliceSelector, useGameSliceDispatch } from '../../redux/reduxHooks';
+import { useGameSliceSelector, useGameSliceDispatch } from '@/redux/reduxHooks';
 import {
   Slices,
   inputAdd,
@@ -15,6 +15,7 @@ import Sprite from './Sprite';
 import Entity from './Entity';
 import PauseModal from './PauseModal';
 import TransitionModal from './TransitionModal';
+import HUD from './HUD';
 
 declare global {
   interface WindowEventMap {
@@ -25,10 +26,10 @@ declare global {
 const Game = () => {
   const {
     gameState: { player, entities, cameraOffset, isLevelReady, screen, isPaused },
+    keysDown,
   } = useGameSliceSelector((state: Slices) => state.game);
-  const dispatch = useGameSliceDispatch();
 
-  // const canvasRef = useRef(null);
+  const dispatch = useGameSliceDispatch();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -102,22 +103,7 @@ const Game = () => {
       </div>
       <TransitionModal />
       {isPaused && <PauseModal />}
-      <div
-        id="hud"
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
-          width: '100%',
-          textAlign: 'right',
-        }}
-      >
-        <span style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-          {Math.floor(player.position.x)},{Math.floor(player.position.y)},{player.area}*
-          {entities.length}*
-        </span>
-      </div>
+      <HUD />
     </div>
   );
 };

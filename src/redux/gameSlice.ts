@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GameSliceState } from '../types';
 import { initialGameState } from '../constants';
 import { inputAddReducer, inputRemoveReducer, processPhysicsReducer } from './reducers';
-import { getScreenDimensions, setCameraOffsetInit, doInitArea } from '../components/game/gameUtils';
+import { getScreenDimensions, setCameraOffsetInit, doInitArea } from '../modules/game/gameUtils';
 
 export type Slices = {
   game: GameSliceState;
@@ -37,10 +37,10 @@ export const gameSlice = createSlice({
       state.gameState.screen = getScreenDimensions();
     },
     inputAdd: (state, action: PayloadAction<string>) => {
-      inputAddReducer(state, action);
+      inputAddReducer(state, action.payload);
     },
     inputRemove: (state, action: PayloadAction<string>) => {
-      inputRemoveReducer(state, action);
+      inputRemoveReducer(state, action.payload);
     },
     processPhysics: (state) => {
       if (!state.gameState.currentTransition) {

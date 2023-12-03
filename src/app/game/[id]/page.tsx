@@ -1,6 +1,6 @@
 'use client';
 
-import Game from '@/components/game/Game';
+import Game from '@/modules/game/components/Game';
 
 import { Provider } from 'react-redux';
 import { store } from '@/redux/store';
