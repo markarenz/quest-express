@@ -140,8 +140,9 @@ const MobilePlayerControlsButton: React.FC<Props> = ({
   return (
     <button
       role="button"
-      onMouseDown={() => handleMobileButtonDown(slug)}
-      onMouseUp={() => handleMobileButtonUp(slug)}
+      onTouchStart={() => handleMobileButtonDown(slug)}
+      onTouchEnd={() => handleMobileButtonUp(slug)}
+      onTouchMove={() => handleMobileButtonUp(slug)}
       className={`absolute w-[48px] h-[48px]`}
       style={{
         left: btnDef.position.x,
