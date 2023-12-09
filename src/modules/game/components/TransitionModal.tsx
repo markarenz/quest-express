@@ -28,7 +28,7 @@ const TransitionModal = () => {
         }, 400);
       }, 300);
     }
-  }, [currentTransition]);
+  }, [currentTransition, dispatch]);
 
   return (
     <div

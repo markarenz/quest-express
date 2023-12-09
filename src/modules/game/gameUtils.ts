@@ -8,8 +8,9 @@ import {
   ENTITY_STATUSES,
   GameSliceState,
   GameState,
+  EffectInstance,
 } from '@/types';
-import { INPUT_MAPPINGS, tileDefs, entityDefs } from '@/constants';
+import { INPUT_MAPPINGS, tileDefs, entityDefs, pickupDefs } from '@/constants';
 
 export const sigFigs = (num: number): number => Number(num.toFixed(2));
 
@@ -295,11 +296,8 @@ export const processTileAction = (state: GameSliceState, action: string, actionV
           nextArea = parseFloat(a);
           nextPosition.x = parseFloat(x);
           nextPosition.y = parseFloat(y);
-          // state.gameState.player.position.x = parseFloat(x);
-          // state.gameState.player.position.y = parseFloat(y);
         } else {
-          nextPosition.x += state.gameState.player.direction.x;
-          nextPosition.y += state.gameState.player.direction.y;
+          nextPosition.y += action === 'go_up' ? -1 : action === 'go_down' ? 1 : 0;
 
           const dir = action === 'go_up' ? 1 : -1;
           nextArea =
@@ -309,27 +307,32 @@ export const processTileAction = (state: GameSliceState, action: string, actionV
         }
 
         state.keysDown = {};
-        // include both area and x-y in transition data
         state.gameState.currentTransition = `teleport-${nextPosition.x}_${nextPosition.y}_${nextArea}`;
-        // if (state.gameState.player.area !== nextArea) {
-        //   state.keysDown = {};
-        //   state.gameState.currentTransition = `area-${nextArea}`;
-        // } else {
-        //   setCameraOffsetInit(state.gameState);
-        // }
         break;
       default:
         break;
     }
   }
 };
+export const getTilePosition = (entity: EntityInstance): Vector => ({
+  x: Math.floor(entity.position.x + 0.5),
+  y: Math.floor(entity.position.y + 0.75),
+});
+
+export const getRandomHash = (): string => {
+  const length = 10;
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  while (result.length < length) {
+    result = result.concat(characters.charAt(Math.floor(Math.random() * characters.length)));
+  }
+  return result;
+};
 
 export const checkTileAction = (state: GameSliceState, tileMap: TileMap) => {
-  const { player } = state.gameState;
-  const currentTile =
-    tileMap[
-      `${Math.floor(player.position.x)},${Math.floor(player.position.y + player.hitBox.position.y)}`
-    ];
+  const playerTile = getTilePosition(state.gameState.player);
+  const playerTileStr = `${playerTile.x},${playerTile.y}`;
+  const currentTile = tileMap[playerTileStr];
 
   if (currentTile) {
     const action = tileDefs[currentTile.type]?.action || null;
@@ -337,17 +340,50 @@ export const checkTileAction = (state: GameSliceState, tileMap: TileMap) => {
       processTileAction(state, action, currentTile.actionValue);
     }
   }
+
+  const currentPickup = state.gameState.pickups[playerTileStr];
+
+  if (currentPickup) {
+    const pickup = state.gameState.pickups[playerTileStr];
+    // pickup.action
+    // pickup.value
+
+    // Remove pickup from in-memory level area
+    const newPickups = state.gameState.level.areas[state.gameState.player.area || 0].pickups.filter(
+      (item) => item.id != pickup.id,
+    );
+    state.gameState.level.areas[state.gameState.player.area || 0].pickups = newPickups;
+
+    // add POW to this position playerTileStr
+    const newEffect = {
+      id: getRandomHash(),
+      type: 'pow',
+      position: playerTile, //state.gameState.player.position,
+    };
+    state.gameState.effects.push(newEffect);
+    delete state.gameState.pickups[playerTileStr];
+  }
 };
 
 export const doInitArea = (gameState: GameState) => {
   gameState.entities = gameState.level.areas[gameState.player.area || 0].entities.map(
-    (entityTileMapInstance) => {
+    (entityInstance) => {
       return {
-        ...entityDefs[entityTileMapInstance.type],
-        ...entityTileMapInstance,
+        ...entityDefs[entityInstance.type],
+        ...entityInstance,
       };
     },
   );
+
+  // TODO: pack the pickups into an object with x,y keys for easy lookups
+  gameState.pickups = {};
+  gameState.effects = [];
+  gameState.level.areas[gameState.player.area || 0].pickups.forEach((pickupInstance) => {
+    gameState.pickups[`${pickupInstance.position.x},${pickupInstance.position.y}`] = {
+      ...pickupDefs[pickupInstance.type],
+      ...pickupInstance,
+    };
+  });
 
   setCameraOffsetInit(gameState);
 };

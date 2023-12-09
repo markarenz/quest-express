@@ -27,6 +27,7 @@ export const gameSlice = createSlice({
     initArea: (state) => {
       doInitArea(state.gameState);
       state.gameState.isLevelReady = true;
+      // state.gameState.currentTransition = 'initArea';
     },
     initLevel: (state) => {
       doInitArea(state.gameState);
@@ -61,6 +62,11 @@ export const gameSlice = createSlice({
     clearTransition: (state) => {
       delete state.gameState.currentTransition;
     },
+    removeEffect: (state, action: PayloadAction<string>) => {
+      state.gameState.effects = state.gameState.effects.filter(
+        (effect) => effect.id !== action.payload,
+      );
+    },
   },
 });
 
@@ -74,6 +80,7 @@ export const {
   initArea,
   teleportPlayer,
   clearTransition,
+  removeEffect,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

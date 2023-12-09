@@ -201,4 +201,5 @@ export const area_1_1 = {
     },
   },
   entities: [],
+  pickups: [],
 };

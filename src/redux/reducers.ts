@@ -5,10 +5,10 @@ import {
   getPlayerDirection,
   moveEntity,
   checkTileAction,
+  getTilePosition,
 } from '../modules/game/gameUtils';
 
 export const inputAddReducer = (state: GameSliceState, key: string) => {
-  console.log(`>>>inputAddReducer *${key}*`);
   if (!state.gameState.currentTransition) {
     if (key === 'escape') {
       state.gameState.isPaused = !state.gameState.isPaused;

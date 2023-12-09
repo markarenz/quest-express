@@ -61,7 +61,7 @@ const Tile: React.FC<Props> = ({ coords, tileData, scale, img }) => {
     if (canvasRef.current) {
       drawTileImage(canvasRef.current, tileDefs[tileData.type]);
     }
-  }, [tileData, height, width]);
+  }, [tileData, height, width, img]);
 
   if (!tileDefs[tileData.type]) {
     return null;

@@ -4,10 +4,6 @@ import { inputAdd, inputRemove, Slices } from '@/redux/gameSlice';
 import MobilePlayerControls from './MobilePlayerControls';
 
 const HUD = () => {
-  // const {
-  //   gameState: { player, entities, cameraOffset, isLevelReady, screen, isPaused },
-  //   keysDown,
-  // } = useGameSliceSelector((state: Slices) => state.game);
   const [img] = useState(new Image());
   const [isReady, setIsReady] = useState(false);
 
@@ -15,7 +11,7 @@ const HUD = () => {
 
   useEffect(() => {
     img.src = '/images/ui.png';
-  }, []);
+  }, [img]);
 
   img.onload = () => {
     setIsReady(true);
@@ -48,10 +44,6 @@ const HUD = () => {
           handleMobileButtonUp={handleMobileButtonUp}
         />
       )}
-      {/* <span style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
-          {Math.floor(player.position.x)},{Math.floor(player.position.y)},{player.area}*
-          {entities.length}*
-        </span> */}
     </div>
   );
 };

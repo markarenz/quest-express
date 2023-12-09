@@ -19,10 +19,10 @@ type Props = {
   slug: string;
   status: ENTITY_STATUSES;
   direction?: Vector;
+  img: HTMLImageElement;
 };
-const Sprite: React.FC<Props> = ({ slug, status, direction }) => {
-  const [isReady, setIsReady] = useState(false);
-  const [img] = useState(typeof window === 'undefined' ? null : new Image());
+
+const Sprite: React.FC<Props> = ({ slug, status, direction, img }) => {
   const [directionSlug, setDirectionSlug] = useState(
     direction ? getDirectionSlug(direction) : 'none',
   );
@@ -49,19 +49,15 @@ const Sprite: React.FC<Props> = ({ slug, status, direction }) => {
   useEffect(() => {
     if (canvasRef.current) {
       const canvas: HTMLCanvasElement = canvasRef.current;
-      if (img && canvas) {
+      if (canvas) {
         const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
         if (context) {
           context.imageSmoothingEnabled = false;
           setCtx(context);
-          img.src = '/images/sprites-01.png';
-          img.onload = () => {
-            setIsReady(true);
-          };
         }
       }
     }
-  }, [img]);
+  }, []);
 
   useEffect(() => {
     let frameIndex = 0;
@@ -71,10 +67,10 @@ const Sprite: React.FC<Props> = ({ slug, status, direction }) => {
         clearInterval(timer);
       }
     };
-    if (img && isReady && ctx) {
+    if (img && ctx) {
       const drawFrame = (frameX: number, frameY: number) => {
-        const h = entityDefs[slug].size.h * TILE_WIDTH;
-        const w = entityDefs[slug].size.w * TILE_WIDTH;
+        const h = entityDefs[slug] ? entityDefs[slug].size.h * TILE_WIDTH : 32;
+        const w = entityDefs[slug] ? entityDefs[slug].size.w * TILE_WIDTH : 32;
         ctx.drawImage(img, frameX * width, frameY * height, w, h, 0, 0, TILE_WIDTH, TILE_WIDTH);
       };
 
@@ -99,7 +95,7 @@ const Sprite: React.FC<Props> = ({ slug, status, direction }) => {
     return () => {
       clearTimer();
     };
-  }, [animationFrames, isReady, ctx, img, slug, height, width]);
+  }, [animationFrames, ctx, img, slug, height, width]);
 
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 

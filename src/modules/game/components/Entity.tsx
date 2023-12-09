@@ -6,11 +6,17 @@ import Sprite from './Sprite';
 type Props = {
   entityData: EntityInstance;
   scale: number;
+  img: HTMLImageElement;
 };
 
-const Entity: React.FC<Props> = ({ entityData, scale }) => {
+const Entity: React.FC<Props> = ({ entityData, scale, img }) => {
   return (
-    <Positioner entity={entityData} key={entityData.id} scale={scale}>
+    <Positioner
+      direction={entityData.direction}
+      position={entityData.position}
+      size={entityData.size}
+      scale={scale}
+    >
       <div
         style={{
           width: '100%',
@@ -18,7 +24,7 @@ const Entity: React.FC<Props> = ({ entityData, scale }) => {
           opacity: entityData.isActive ? 1.0 : 0.5,
         }}
       >
-        <Sprite slug={entityData.type} status={entityData.status} />
+        <Sprite slug={entityData.type} status={entityData.status} img={img} />
       </div>
     </Positioner>
   );

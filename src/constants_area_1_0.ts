@@ -1,4 +1,4 @@
-import { DIRECTIONS, ENTITY_STATUSES } from './types';
+import { DIRECTIONS } from './types';
 
 export const area_1_0 = {
   tileMap: {
@@ -808,7 +808,7 @@ export const area_1_0 = {
     {
       id: 'tree-1',
       type: 'plant',
-      direction: DIRECTIONS.NONE,
+      // direction: null,
       position: {
         x: 15,
         y: 9,
@@ -817,11 +817,22 @@ export const area_1_0 = {
     {
       id: 'tree-2',
       type: 'plant',
-      direction: DIRECTIONS.NONE,
+      // direction: null,
       position: {
         x: 3,
         y: 5,
       },
+    },
+  ],
+  pickups: [
+    {
+      id: 'bone-1',
+      type: 'bone',
+      size: {
+        h: 1,
+        w: 1,
+      },
+      position: { x: 7, y: 7 },
     },
   ],
 };

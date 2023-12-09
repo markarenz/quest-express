@@ -1,4 +1,12 @@
-import { GameState, TileDef, ENTITY_STATUSES, DIRECTIONS, Size, EntityDef } from './types';
+import {
+  GameState,
+  TileDef,
+  ENTITY_STATUSES,
+  DIRECTIONS,
+  Size,
+  EntityDef,
+  PickupDef,
+} from './types';
 import { getScreenDimensions } from './modules/game/gameUtils';
 import { area_1_0 } from './constants_area_1_0';
 import { area_1_1 } from './constants_area_1_1';
@@ -291,6 +299,17 @@ export const entityDefs: { [key: string]: EntityDef } = {
   },
 };
 
+export const pickupDefs: { [key: string]: PickupDef } = {
+  bone: {
+    action: 'take',
+    value: '',
+    size: {
+      h: 1,
+      w: 1,
+    },
+  },
+};
+
 export const initialGameState: GameState = {
   isPaused: false,
   isLevelReady: false,
@@ -317,7 +336,7 @@ export const initialGameState: GameState = {
     type: 'player',
     area: 0,
     isActive: true,
-    direction: DIRECTIONS.NONE,
+    direction: DIRECTIONS.DOWN,
     status: ENTITY_STATUSES.IDLE,
     position: {
       x: 6,
@@ -339,6 +358,8 @@ export const initialGameState: GameState = {
     },
   },
   entities: [],
+  pickups: {},
+  effects: [],
 };
 
 export const INPUT_MAPPINGS: { [key: string]: string } = {
@@ -358,6 +379,11 @@ export const SPRITE_FRAMES: any = {
   plant: {
     idle: {
       none: [[0, 4]],
+    },
+  },
+  bone: {
+    idle: {
+      none: [[0, 0]],
     },
   },
   player: {

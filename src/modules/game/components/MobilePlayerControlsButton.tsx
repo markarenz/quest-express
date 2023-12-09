@@ -135,7 +135,7 @@ const MobilePlayerControlsButton: React.FC<Props> = ({
     if (canvasRef.current) {
       drawButton(canvasRef.current);
     }
-  }, [isActive, img]);
+  }, [isActive, img, btnDef]);
 
   return (
     <button
@@ -143,7 +143,7 @@ const MobilePlayerControlsButton: React.FC<Props> = ({
       onTouchStart={() => handleMobileButtonDown(slug)}
       onTouchEnd={() => handleMobileButtonUp(slug)}
       onTouchMove={() => handleMobileButtonUp(slug)}
-      className={`absolute w-[48px] h-[48px]`}
+      className={`absolute w-[48px] h-[48px] select-none`}
       style={{
         left: btnDef.position.x,
         top: btnDef.position.y,

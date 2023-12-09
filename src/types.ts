@@ -28,39 +28,25 @@ export enum ENTITY_STATUSES {
 export type EntityDef = {
   isActive: boolean;
   status: ENTITY_STATUSES;
-  area?: number; // only needed for player
   size: Size;
   hitBox: {
     position: Vector;
     size: Size;
   };
-  // type: string;
-  // id: string;
-  // direction: Vector;
-  // position: Vector;
 };
 
 type EntityTileMapInstance = {
   id: string;
   type: string;
-  direction: Vector;
+  direction?: Vector;
   position: Vector;
 };
-
-// export type EntityInstance = EntityDef & EntityTileMapInstance;
-
-// extends EntityDef {
-//   id: string;
-//   type: string;
-//   direction: Vector;
-//   position: Vector;
-// }
 
 export type EntityInstance = {
   id: string;
   type: string;
   isActive: boolean;
-  direction: Vector;
+  direction?: Vector;
   status: ENTITY_STATUSES;
   position: Vector;
   area?: number;
@@ -74,12 +60,18 @@ export type EntityInstance = {
 export type Area = {
   tileMap: TileMap;
   entities: EntityTileMapInstance[];
+  pickups: PickupTileMapInstance[];
 };
 
 export type Level = {
   playerInit: Vector;
   startArea: number;
   areas: { [key: string]: Area };
+};
+export type EffectInstance = {
+  id: string;
+  type: string;
+  position: Vector;
 };
 
 export type GameState = {
@@ -96,6 +88,8 @@ export type GameState = {
   cameraOffset: Vector;
   player: EntityInstance;
   entities: EntityInstance[];
+  pickups: { [key: string]: PickupInstance };
+  effects: EffectInstance[];
 };
 
 export type GameSliceState = {
@@ -125,4 +119,33 @@ export const DIRECTIONS = {
   RIGHT: { x: 1, y: 0 },
   UP: { x: 0, y: -1 },
   DOWN: { x: 0, y: 1 },
+};
+
+// PICKUPS
+
+export type PickupDef = {
+  size: Size;
+  action: string;
+  value: string;
+  // refresh?
+};
+
+export type PickupTileMapInstance = {
+  id: string;
+  type: string;
+  position: Vector;
+};
+
+export type PickupInstance = {
+  id: string;
+  type: string;
+  position: Vector;
+
+  size: Size;
+  action: string;
+  value: string;
+};
+
+export type PickupInstances = {
+  [key: string]: PickupInstance;
 };
