@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useGameSliceDispatch } from '@/redux/reduxHooks'; // useGameSliceSelector
+import { useGameSliceDispatch, useGameSliceSelector } from '@/redux/reduxHooks';
+import { GameSliceState } from '@/types';
 import { inputAdd, inputRemove, Slices } from '@/redux/gameSlice';
 import MobilePlayerControls from './MobilePlayerControls';
 
 const HUD = () => {
+  const {
+    gameState: { inventory },
+  } = useGameSliceSelector((state: Slices) => state.game);
+
   const [img] = useState(new Image());
   const [isReady, setIsReady] = useState(false);
 
@@ -37,6 +42,7 @@ const HUD = () => {
         height: '100%',
       }}
     >
+      <div>{JSON.stringify(inventory)}</div>
       {isReady && (
         <MobilePlayerControls
           img={img}

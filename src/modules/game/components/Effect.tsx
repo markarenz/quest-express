@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { EffectInstance, DIRECTIONS } from '@/types';
+import { EffectInstance } from '@/types';
 import { removeEffect } from '@/redux/gameSlice';
-import { useGameSliceSelector, useGameSliceDispatch } from '@/redux/reduxHooks';
+import { useGameSliceDispatch } from '@/redux/reduxHooks';
 import { TILE_WIDTH } from '@/constants';
 import Positioner from './Positioner';
 
@@ -9,34 +9,36 @@ type Props = {
   img: HTMLImageElement;
   effect: EffectInstance;
   scale: number;
+  playSound: Function;
 };
 
-const Effect: React.FC<Props> = ({ img, effect, scale }) => {
+const Effect: React.FC<Props> = ({ img, effect, scale, playSound }) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const canvasRef = useRef(null);
   const dispatch = useGameSliceDispatch();
-  const animationFrames = [
-    [0, 0],
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [4, 0],
-    [5, 0],
-  ];
   useEffect(() => {
     if (canvasRef.current) {
       const canvas: HTMLCanvasElement = canvasRef.current;
       if (img && canvas) {
         const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
         if (context) {
+          playSound(effect.type);
           context.imageSmoothingEnabled = false;
           setCtx(context);
         }
       }
     }
-  }, [img]);
+  }, [img, playSound, effect.type]);
 
   useEffect(() => {
+    const animationFrames = [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [4, 0],
+      [5, 0],
+    ];
     let frameIndex = 0;
     let timer: any;
     const clearTimer = () => {
@@ -79,7 +81,7 @@ const Effect: React.FC<Props> = ({ img, effect, scale }) => {
     return () => {
       clearTimer();
     };
-  }, [animationFrames, ctx, img]);
+  }, [ctx, img, dispatch, effect.id]);
 
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 

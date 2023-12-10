@@ -10,6 +10,8 @@ import {
   initArea,
 } from '@/redux/gameSlice';
 import { ObjectOfBooleans } from '@/types';
+import { GAME_IMAGE_SRC } from '@/constants';
+import { getDefaultImages, getDefaultSounds } from '../gameUtils';
 import Entities from './Entities';
 import Effects from './Effects';
 import Pickups from './Pickups';
@@ -32,47 +34,54 @@ const Game = () => {
 
   const dispatch = useGameSliceDispatch();
 
-  const [images] = useState({
-    tiles: new Image(),
-    sprites: new Image(),
-    effects: new Image(),
-    pickups: new Image(),
+  const [sounds] = useState({
+    ...getDefaultSounds(),
   });
+  const [images] = useState({
+    ...getDefaultImages(),
+  });
+
+  const playSound = (slug: string) => {
+    sounds[slug].play();
+  };
 
   const [imagesLoaded, setImagesLoaded] = useState<ObjectOfBooleans>({});
   const [imagesLoadComplete, setImagesLoadComplete] = useState<boolean>(false);
 
-  const imageLoaded = (key: string) => {
-    setImagesLoaded((prev) => {
-      const newImagesLoaded = {
-        ...prev,
-        [key]: true,
-      };
-      if (Object.keys(newImagesLoaded).length === Object.keys(images).length) {
-        setTimeout(() => {
-          setImagesLoadComplete(true);
-        }, 10);
-      }
-      return newImagesLoaded;
-    });
-  };
-
   useEffect(() => {
-    images.tiles.src = '/images/tiles-01.png';
-    images.sprites.src = '/images/sprites-01.png';
-    images.effects.src = '/images/effects.png';
-    images.pickups.src = '/images/pickups.png';
+    const handleImageLoaded = (key: string) => {
+      setImagesLoaded((prev) => {
+        const newImagesLoaded = {
+          ...prev,
+          [key]: true,
+        };
+        if (Object.keys(newImagesLoaded).length === Object.keys(images).length) {
+          setTimeout(() => {
+            setImagesLoadComplete(true);
+          }, 10);
+        }
+        return newImagesLoaded;
+      });
+    };
+
+    Object.keys(GAME_IMAGE_SRC).forEach((key) => {
+      images[key].src = GAME_IMAGE_SRC[key];
+    });
+    // images.tiles.src = '/images/tiles-01.png';
+    // images.sprites.src = '/images/sprites-01.png';
+    // images.effects.src = '/images/effects.png';
+    // images.pickups.src = '/images/pickups.png';
     images.tiles.onload = () => {
-      imageLoaded('tiles');
+      handleImageLoaded('tiles');
     };
     images.sprites.onload = () => {
-      imageLoaded('sprites');
+      handleImageLoaded('sprites');
     };
     images.effects.onload = () => {
-      imageLoaded('effects');
+      handleImageLoaded('effects');
     };
     images.pickups.onload = () => {
-      imageLoaded('pickups');
+      handleImageLoaded('pickups');
     };
   }, [images]);
 
@@ -138,9 +147,9 @@ const Game = () => {
         <Entities img={images.sprites} />
         <Pickups img={images.pickups} />
         <Player img={images.sprites} />
-        <Effects img={images.effects} />
+        <Effects img={images.effects} playSound={playSound} />
       </div>
-      <TransitionModal />
+      <TransitionModal playSound={playSound} />
       {isPaused && <PauseModal />}
       <HUD />
     </div>

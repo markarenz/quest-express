@@ -1,9 +1,13 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useGameSliceSelector, useGameSliceDispatch } from '@/redux/reduxHooks';
 import { clearTransition, teleportPlayer } from '@/redux/gameSlice';
 import { Slices } from '@/redux/gameSlice';
 
-const TransitionModal = () => {
+type Props = {
+  playSound: Function;
+};
+
+const TransitionModal: React.FC<Props> = ({ playSound }) => {
   const dispatch = useGameSliceDispatch();
   const {
     gameState: { currentTransition },
@@ -12,7 +16,7 @@ const TransitionModal = () => {
   useEffect(() => {
     if (currentTransition) {
       const [type, valueStr] = currentTransition?.split('-') || [];
-
+      playSound('teleport');
       setTimeout(() => {
         // wait
         switch (type) {
@@ -28,7 +32,7 @@ const TransitionModal = () => {
         }, 400);
       }, 300);
     }
-  }, [currentTransition, dispatch]);
+  }, [currentTransition, dispatch, playSound]);
 
   return (
     <div

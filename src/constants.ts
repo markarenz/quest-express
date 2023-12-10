@@ -6,6 +6,7 @@ import {
   Size,
   EntityDef,
   PickupDef,
+  ObjectOfStrings,
 } from './types';
 import { getScreenDimensions } from './modules/game/gameUtils';
 import { area_1_0 } from './constants_area_1_0';
@@ -331,6 +332,7 @@ export const initialGameState: GameState = {
       1: area_1_1,
     },
   },
+  inventory: {},
   player: {
     id: 'player',
     type: 'player',
@@ -420,4 +422,16 @@ export const SPRITE_FRAMES: any = {
       right: [[3, 2]],
     },
   },
+};
+
+export const GAME_IMAGE_SRC: ObjectOfStrings = {
+  tiles: '/images/tiles-01.png',
+  sprites: '/images/sprites-01.png',
+  effects: '/images/effects.png',
+  pickups: '/images/pickups.png',
+};
+
+export const GAME_SOUND_SRC: ObjectOfStrings = {
+  pow: '/sounds/167338__willy_ineedthatapp_com__pup_fat.mp3',
+  teleport: '/sounds/99218__mtadder__beat.mp3',
 };

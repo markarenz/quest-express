@@ -9,8 +9,17 @@ import {
   GameSliceState,
   GameState,
   EffectInstance,
+  ObjectOfImages,
+  ObjectOfAudio,
 } from '@/types';
-import { INPUT_MAPPINGS, tileDefs, entityDefs, pickupDefs } from '@/constants';
+import {
+  INPUT_MAPPINGS,
+  tileDefs,
+  entityDefs,
+  pickupDefs,
+  GAME_IMAGE_SRC,
+  GAME_SOUND_SRC,
+} from '@/constants';
 
 export const sigFigs = (num: number): number => Number(num.toFixed(2));
 
@@ -347,6 +356,15 @@ export const checkTileAction = (state: GameSliceState, tileMap: TileMap) => {
     const pickup = state.gameState.pickups[playerTileStr];
     // pickup.action
     // pickup.value
+    // console.log('PICKUP', pickup.action, pickup.value);
+    switch (pickup.action) {
+      case 'take':
+        state.gameState.inventory[pickup.type] = parseFloat(pickup.value) || 1;
+        break;
+      default: {
+        break;
+      }
+    }
 
     // Remove pickup from in-memory level area
     const newPickups = state.gameState.level.areas[state.gameState.player.area || 0].pickups.filter(
@@ -386,4 +404,20 @@ export const doInitArea = (gameState: GameState) => {
   });
 
   setCameraOffsetInit(gameState);
+};
+
+export const getDefaultImages = () => {
+  const defaultImages: ObjectOfImages = {};
+  Object.keys(GAME_IMAGE_SRC).forEach((slug: string) => {
+    defaultImages[slug] = new Image();
+  });
+  return defaultImages;
+};
+
+export const getDefaultSounds = () => {
+  const defaultSounds: ObjectOfAudio = {};
+  Object.keys(GAME_SOUND_SRC).forEach((slug: string) => {
+    defaultSounds[slug] = new Audio(GAME_SOUND_SRC[slug]);
+  });
+  return defaultSounds;
 };

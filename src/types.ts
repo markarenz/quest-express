@@ -86,6 +86,7 @@ export type GameState = {
   };
   level: Level;
   cameraOffset: Vector;
+  inventory: ObjectOfNumbers;
   player: EntityInstance;
   entities: EntityInstance[];
   pickups: { [key: string]: PickupInstance };
@@ -109,8 +110,18 @@ export type Vectors = {
 export type ObjectOfBooleans = {
   [key: string]: boolean;
 };
+
 export type ObjectOfStrings = {
   [key: string]: string;
+};
+export type ObjectOfNumbers = {
+  [key: string]: number;
+};
+export type ObjectOfImages = {
+  [key: string]: HTMLImageElement;
+};
+export type ObjectOfAudio = {
+  [key: string]: HTMLAudioElement;
 };
 
 export const DIRECTIONS = {

@@ -6,9 +6,10 @@ import { EffectInstance } from '@/types';
 
 type Props = {
   img: HTMLImageElement;
+  playSound: Function;
 };
 
-const Effects: React.FC<Props> = ({ img }) => {
+const Effects: React.FC<Props> = ({ img, playSound }) => {
   const {
     gameState: { effects, screen },
   } = useGameSliceSelector((state: Slices) => state.game);
@@ -16,7 +17,13 @@ const Effects: React.FC<Props> = ({ img }) => {
   return (
     <>
       {effects.map((effect) => (
-        <Effect key={effect.id} effect={effect} scale={screen.scale} img={img} />
+        <Effect
+          key={effect.id}
+          effect={effect}
+          scale={screen.scale}
+          img={img}
+          playSound={playSound}
+        />
       ))}
     </>
   );
