@@ -9,7 +9,7 @@ import {
   setScreenDimensions,
   initArea,
 } from '@/redux/gameSlice';
-import { ObjectOfBooleans } from '@/types';
+import { ObjectOfAudio, ObjectOfBooleans } from '@/types';
 import { GAME_IMAGE_SRC } from '@/constants';
 import { getDefaultImages, getDefaultSounds } from '../gameUtils';
 import Entities from './Entities';
@@ -29,7 +29,17 @@ declare global {
 
 const Game = () => {
   const {
-    gameState: { cameraOffset, isLevelReady, screen, isPaused },
+    gameState: {
+      cameraOffset,
+      isLevelReady,
+      currentTransition,
+      screen,
+      player,
+      entities,
+      effects,
+      pickups,
+      isPaused,
+    },
   } = useGameSliceSelector((state: Slices) => state.game);
 
   const dispatch = useGameSliceDispatch();
@@ -40,10 +50,6 @@ const Game = () => {
   const [images] = useState({
     ...getDefaultImages(),
   });
-
-  const playSound = (slug: string) => {
-    sounds[slug].play();
-  };
 
   const [imagesLoaded, setImagesLoaded] = useState<ObjectOfBooleans>({});
   const [imagesLoadComplete, setImagesLoadComplete] = useState<boolean>(false);
@@ -67,10 +73,6 @@ const Game = () => {
     Object.keys(GAME_IMAGE_SRC).forEach((key) => {
       images[key].src = GAME_IMAGE_SRC[key];
     });
-    // images.tiles.src = '/images/tiles-01.png';
-    // images.sprites.src = '/images/sprites-01.png';
-    // images.effects.src = '/images/effects.png';
-    // images.pickups.src = '/images/pickups.png';
     images.tiles.onload = () => {
       handleImageLoaded('tiles');
     };
@@ -144,12 +146,12 @@ const Game = () => {
         }}
       >
         <Tiles img={images.tiles} />
-        <Entities img={images.sprites} />
-        <Pickups img={images.pickups} />
-        <Player img={images.sprites} />
-        <Effects img={images.effects} playSound={playSound} />
+        <Entities img={images.sprites} entities={entities} screen={screen} />
+        <Pickups img={images.pickups} pickups={pickups} screen={screen} />
+        <Player img={images.sprites} player={player} screen={screen} />
+        <Effects img={images.effects} effects={effects} screen={screen} sounds={sounds} />
       </div>
-      <TransitionModal playSound={playSound} />
+      <TransitionModal sounds={sounds} currentTransition={currentTransition} />
       {isPaused && <PauseModal />}
       <HUD />
     </div>

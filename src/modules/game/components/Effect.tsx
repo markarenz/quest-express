@@ -22,13 +22,13 @@ const Effect: React.FC<Props> = ({ img, effect, scale, playSound }) => {
       if (img && canvas) {
         const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
         if (context) {
-          playSound(effect.type);
+          playSound();
           context.imageSmoothingEnabled = false;
           setCtx(context);
         }
       }
     }
-  }, [img, playSound, effect.type]);
+  }, [img, playSound]);
 
   useEffect(() => {
     const animationFrames = [

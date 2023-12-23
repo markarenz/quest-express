@@ -3,16 +3,15 @@ import { Slices } from '@/redux/gameSlice';
 import { useGameSliceSelector } from '@/redux/reduxHooks';
 import Positioner from './Positioner';
 import Sprite from './Sprite';
+import { EntityInstance, Screen } from '@/types';
 
 type Props = {
   img: HTMLImageElement;
+  player: EntityInstance;
+  screen: Screen;
 };
 
-const Player: React.FC<Props> = ({ img }) => {
-  const {
-    gameState: { player, screen },
-  } = useGameSliceSelector((state: Slices) => state.game);
-
+const Player: React.FC<Props> = React.memo(({ img, player, screen }) => {
   return (
     <Positioner
       direction={player.direction}
@@ -25,5 +24,6 @@ const Player: React.FC<Props> = ({ img }) => {
       </div>
     </Positioner>
   );
-};
+});
+
 export default Player;

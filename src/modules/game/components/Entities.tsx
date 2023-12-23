@@ -1,16 +1,14 @@
-import { Slices } from '@/redux/gameSlice';
-import { EntityInstance } from '@/types';
-import { useGameSliceSelector } from '@/redux/reduxHooks';
+import React from 'react';
+import { EntityInstance, Screen } from '@/types';
 import Entity from './Entity';
 
 type Props = {
   img: HTMLImageElement;
+  entities: EntityInstance[];
+  screen: Screen;
 };
 
-const Entities: React.FC<Props> = ({ img }) => {
-  const {
-    gameState: { entities, screen },
-  } = useGameSliceSelector((state: Slices) => state.game);
+const Entities: React.FC<Props> = React.memo(({ img, entities, screen }) => {
   return (
     <>
       {entities.map((entityData: EntityInstance) => (
@@ -18,6 +16,6 @@ const Entities: React.FC<Props> = ({ img }) => {
       ))}
     </>
   );
-};
+});
 
 export default Entities;

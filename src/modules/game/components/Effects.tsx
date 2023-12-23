@@ -2,18 +2,17 @@ import React from 'react';
 import { Slices } from '@/redux/gameSlice';
 import { useGameSliceSelector } from '@/redux/reduxHooks';
 import Effect from './Effect';
-import { EffectInstance } from '@/types';
+import { EffectInstance, ObjectOfAudio, Screen } from '@/types';
+import { playSound } from '../gameUtils';
 
 type Props = {
   img: HTMLImageElement;
-  playSound: Function;
+  effects: EffectInstance[];
+  screen: Screen;
+  sounds: ObjectOfAudio;
 };
 
-const Effects: React.FC<Props> = ({ img, playSound }) => {
-  const {
-    gameState: { effects, screen },
-  } = useGameSliceSelector((state: Slices) => state.game);
-
+const Effects: React.FC<Props> = React.memo(({ img, effects, screen, sounds }) => {
   return (
     <>
       {effects.map((effect) => (
@@ -22,11 +21,11 @@ const Effects: React.FC<Props> = ({ img, playSound }) => {
           effect={effect}
           scale={screen.scale}
           img={img}
-          playSound={playSound}
+          playSound={() => playSound(sounds, effect.type)}
         />
       ))}
     </>
   );
-};
+});
 
 export default Effects;

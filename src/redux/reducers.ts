@@ -32,12 +32,14 @@ export const inputRemoveReducer = (state: GameSliceState, key: string) => {
 };
 
 const checkEntitiesProximityStatus = (gameState: GameState) => {
-  gameState.entities = gameState.entities.map((entity) => {
+  gameState.entities.forEach((entity, idx) => {
     const distance =
       Math.abs(entity.position.x - gameState.player.position.x) +
       Math.abs(entity.position.y - gameState.player.position.y);
-    entity.isActive = distance < 5;
-    return entity;
+    const isActive = distance < 5;
+    if (entity.isActive !== isActive) {
+      gameState.entities[idx].isActive = isActive;
+    }
   });
 };
 

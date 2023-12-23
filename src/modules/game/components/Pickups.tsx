@@ -1,17 +1,14 @@
 import React from 'react';
-import { Slices } from '@/redux/gameSlice';
-import { useGameSliceSelector } from '@/redux/reduxHooks';
 import Pickup from './Pickup';
+import { Screen, PickupInstance } from '@/types';
 
 type Props = {
   img: HTMLImageElement;
+  pickups: { [key: string]: PickupInstance };
+  screen: Screen;
 };
 
-const Pickups: React.FC<Props> = ({ img }) => {
-  const {
-    gameState: { pickups, screen },
-  } = useGameSliceSelector((state: Slices) => state.game);
-
+const Pickups: React.FC<Props> = React.memo(({ img, pickups, screen }) => {
   return (
     <>
       {Object.keys(pickups).map((key: string) => (
@@ -19,6 +16,6 @@ const Pickups: React.FC<Props> = ({ img }) => {
       ))}
     </>
   );
-};
+});
 
 export default Pickups;

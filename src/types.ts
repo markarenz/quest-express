@@ -74,16 +74,18 @@ export type EffectInstance = {
   position: Vector;
 };
 
+export type Screen = {
+  size: Size;
+  aspectRatio: number;
+  scale: number;
+};
+
 export type GameState = {
   isPaused: boolean;
   currentTransition?: string;
   physicsFrame: number;
   isLevelReady: boolean;
-  screen: {
-    size: Size;
-    aspectRatio: number;
-    scale: number;
-  };
+  screen: Screen;
   level: Level;
   cameraOffset: Vector;
   inventory: ObjectOfNumbers;

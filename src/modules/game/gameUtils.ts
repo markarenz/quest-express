@@ -354,9 +354,6 @@ export const checkTileAction = (state: GameSliceState, tileMap: TileMap) => {
 
   if (currentPickup) {
     const pickup = state.gameState.pickups[playerTileStr];
-    // pickup.action
-    // pickup.value
-    // console.log('PICKUP', pickup.action, pickup.value);
     switch (pickup.action) {
       case 'take':
         state.gameState.inventory[pickup.type] = parseFloat(pickup.value) || 1;
@@ -420,4 +417,8 @@ export const getDefaultSounds = () => {
     defaultSounds[slug] = new Audio(GAME_SOUND_SRC[slug]);
   });
   return defaultSounds;
+};
+
+export const playSound = (sounds: ObjectOfAudio, slug: string) => {
+  sounds[slug].play();
 };

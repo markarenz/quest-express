@@ -1,22 +1,21 @@
 import React, { useEffect } from 'react';
-import { useGameSliceSelector, useGameSliceDispatch } from '@/redux/reduxHooks';
+import { useGameSliceDispatch } from '@/redux/reduxHooks';
 import { clearTransition, teleportPlayer } from '@/redux/gameSlice';
-import { Slices } from '@/redux/gameSlice';
+import { ObjectOfAudio } from '@/types';
+import { playSound } from '../gameUtils';
 
 type Props = {
-  playSound: Function;
+  sounds: ObjectOfAudio;
+  currentTransition: string | undefined;
 };
 
-const TransitionModal: React.FC<Props> = ({ playSound }) => {
+const TransitionModal: React.FC<Props> = React.memo(({ sounds, currentTransition }) => {
   const dispatch = useGameSliceDispatch();
-  const {
-    gameState: { currentTransition },
-  } = useGameSliceSelector((state: Slices) => state.game);
 
   useEffect(() => {
     if (currentTransition) {
       const [type, valueStr] = currentTransition?.split('-') || [];
-      playSound('teleport');
+      playSound(sounds, 'teleport');
       setTimeout(() => {
         // wait
         switch (type) {
@@ -32,11 +31,11 @@ const TransitionModal: React.FC<Props> = ({ playSound }) => {
         }, 400);
       }, 300);
     }
-  }, [currentTransition, dispatch, playSound]);
+  }, [currentTransition, dispatch, sounds]);
 
   return (
     <div
-      id="pauseModal"
+      id="transitionModal"
       className={`absolute w-full h-full left-0 top-0 pointer-events-none transition-opacity duration-300 ${
         !currentTransition ? 'opacity-0' : 'opacity-100'
       }`}
@@ -53,6 +52,6 @@ const TransitionModal: React.FC<Props> = ({ playSound }) => {
       />
     </div>
   );
-};
+});
 
 export default TransitionModal;
