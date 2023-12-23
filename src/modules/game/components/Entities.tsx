@@ -8,7 +8,7 @@ type Props = {
   screen: Screen;
 };
 
-const Entities: React.FC<Props> = React.memo(({ img, entities, screen }) => {
+const Entities: React.FC<Props> = ({ img, entities, screen }) => {
   return (
     <>
       {entities.map((entityData: EntityInstance) => (
@@ -16,6 +16,7 @@ const Entities: React.FC<Props> = React.memo(({ img, entities, screen }) => {
       ))}
     </>
   );
-});
+};
 
-export default Entities;
+const M_Entities = React.memo(Entities);
+export default M_Entities;

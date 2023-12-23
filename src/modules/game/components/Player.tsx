@@ -11,7 +11,7 @@ type Props = {
   screen: Screen;
 };
 
-const Player: React.FC<Props> = React.memo(({ img, player, screen }) => {
+const Player: React.FC<Props> = ({ img, player, screen }) => {
   return (
     <Positioner
       direction={player.direction}
@@ -24,6 +24,7 @@ const Player: React.FC<Props> = React.memo(({ img, player, screen }) => {
       </div>
     </Positioner>
   );
-});
+};
 
-export default Player;
+const M_Player = React.memo(Player);
+export default M_Player;

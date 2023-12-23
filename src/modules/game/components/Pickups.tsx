@@ -8,7 +8,7 @@ type Props = {
   screen: Screen;
 };
 
-const Pickups: React.FC<Props> = React.memo(({ img, pickups, screen }) => {
+const Pickups: React.FC<Props> = ({ img, pickups, screen }) => {
   return (
     <>
       {Object.keys(pickups).map((key: string) => (
@@ -16,6 +16,7 @@ const Pickups: React.FC<Props> = React.memo(({ img, pickups, screen }) => {
       ))}
     </>
   );
-});
+};
 
-export default Pickups;
+const M_Pickups = React.memo(Pickups);
+export default M_Pickups;

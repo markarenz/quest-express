@@ -1,17 +1,15 @@
 import React from 'react';
-import { useGameSliceSelector } from '@/redux/reduxHooks';
-import { Slices } from '@/redux/gameSlice';
 import Tile from './Tile';
+import { Level, Screen, EntityInstance } from '@/types';
 
 type Props = {
   img: HTMLImageElement;
+  level: Level;
+  player: EntityInstance;
+  screen: Screen;
 };
 
-const Tiles: React.FC<Props> = ({ img }) => {
-  const {
-    gameState: { level, player, screen },
-  } = useGameSliceSelector((state: Slices) => state.game);
-
+const Tiles: React.FC<Props> = ({ img, level, player, screen }) => {
   const { tileMap } = level.areas[player?.area || 0];
 
   return (

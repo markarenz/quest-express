@@ -12,7 +12,7 @@ type Props = {
   sounds: ObjectOfAudio;
 };
 
-const Effects: React.FC<Props> = React.memo(({ img, effects, screen, sounds }) => {
+const Effects: React.FC<Props> = ({ img, effects, screen, sounds }) => {
   return (
     <>
       {effects.map((effect) => (
@@ -26,6 +26,7 @@ const Effects: React.FC<Props> = React.memo(({ img, effects, screen, sounds }) =
       ))}
     </>
   );
-});
+};
 
-export default Effects;
+const M_Effects = React.memo(Effects);
+export default M_Effects;

@@ -35,6 +35,7 @@ const Game = () => {
       currentTransition,
       screen,
       player,
+      level,
       entities,
       effects,
       pickups,
@@ -145,7 +146,7 @@ const Game = () => {
           zIndex: 0,
         }}
       >
-        <Tiles img={images.tiles} />
+        <Tiles img={images.tiles} level={level} player={player} screen={screen} />
         <Entities img={images.sprites} entities={entities} screen={screen} />
         <Pickups img={images.pickups} pickups={pickups} screen={screen} />
         <Player img={images.sprites} player={player} screen={screen} />

@@ -9,7 +9,7 @@ type Props = {
   currentTransition: string | undefined;
 };
 
-const TransitionModal: React.FC<Props> = React.memo(({ sounds, currentTransition }) => {
+const TransitionModal: React.FC<Props> = ({ sounds, currentTransition }) => {
   const dispatch = useGameSliceDispatch();
 
   useEffect(() => {
@@ -52,6 +52,7 @@ const TransitionModal: React.FC<Props> = React.memo(({ sounds, currentTransition
       />
     </div>
   );
-});
+};
 
-export default TransitionModal;
+const M_TransitionModal = React.memo(TransitionModal);
+export default M_TransitionModal;
